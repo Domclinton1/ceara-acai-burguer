@@ -202,7 +202,7 @@ function checkRestaurantOpen() {
     const hora = data.getHours();
     const diaSemana = data.getDay(); // 0 = Domingo, 1 = Segunda, ..., 6 = Sábado
 
-    const abertoHoje = diaSemana !== 1; // Aberto se NÃO for segunda (1)
+    const abertoHoje = diaSemana !== 2; // Aberto se NÃO for segunda (1)
     const horarioAberto = hora >= 8 && hora < 24;
 
     return abertoHoje && horarioAberto;
