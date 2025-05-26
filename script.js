@@ -200,7 +200,10 @@ window.open(`https://wa.me/${phone}?text=${message}`, "_blank");
 function checkRestaurantOpen() {
     const data = new Date();
     const hora = data.getHours();
+    const diaSemana = data.getDay(); // 0 = Domingo, 1 = Segunda, ..., 6 = Sábado
 
+    const abertoHoje = diaSemana !== 1; // Aberto se NÃO for segunda (1)
+    const horarioAberto = hora >= 8 && hora < 24;
 
     return abertoHoje && horarioAberto;
 }
