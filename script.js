@@ -163,23 +163,33 @@ checkoutBtn.addEventListener("click", function(){
         return item.quantity * item.price;
     }
 
-    //enviar o pedido para a api do whatsapp
-    const cartItems = cart.map((item) => {
-        const itemTotal = calculateItemTotal(item);
-        return(
-            ` ${item.name} Quantidade: (${item.quantity}) Preço: R$${item.price}| `
-        )
-      
-    }).join("");
+  // Enviar o pedido para a API do WhatsApp
+const cartItems = cart.map((item) => {
+    const itemTotal = calculateItemTotal(item);
+    return `• *${item.name}*  
+  Quantidade: ${item.quantity}  
+  Preço unitário: R$${item.price.toFixed(2)}  
+  Subtotal: R$${itemTotal.toFixed(2)}\n`;
+}).join("\n");
 
-    const totalPrice = cart.reduce((total, item) => {
-        return total + calculateItemTotal(item);
-    }, 0);
-    const message = encodeURIComponent(`${cartItems} Valor total da compra: R$${totalPrice.toFixed(2)}`);
+const totalPrice = cart.reduce((total, item) => {
+    return total + calculateItemTotal(item);
+}, 0);
 
-    const phone ="31975783629"
+const message = encodeURIComponent(
+`Olá! 😊 Gostaria de fazer um pedido com os seguintes itens:
 
-    window.open(`https://wa.me/${phone}?text=${message} Endereço: ${addressInput.value}`, "_blank");
+${cartItems}
+*Valor total da compra:* R$${totalPrice.toFixed(2)}
+
+Endereço para entrega: ${addressInput.value}
+
+Desde já, agradeço! Aguardo a confirmação do pedido. ✅`
+);
+
+const phone = "31975783629";
+window.open(`https://wa.me/${phone}?text=${message}`, "_blank");
+
 
 
     cart = [];
@@ -190,10 +200,7 @@ checkoutBtn.addEventListener("click", function(){
 function checkRestaurantOpen() {
     const data = new Date();
     const hora = data.getHours();
-    const diaSemana = data.getDay(); // 0 = Domingo, 1 = Segunda, ..., 6 = Sábado
 
-    const abertoHoje = diaSemana !== 1; // Aberto se NÃO for segunda (1)
-    const horarioAberto = hora >= 8 && hora < 24;
 
     return abertoHoje && horarioAberto;
 }
