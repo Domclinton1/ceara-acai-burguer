@@ -199,21 +199,26 @@ document.getElementById("pix-modal").style.display = "flex";
     updateCartModal();
 })
 
-document.getElementById("confirm-pix-btn").addEventListener("click", function () {
-    const cartItems = cart.map(item => {
-        return `${item.name} (x${item.quantity}) - R$${item.price.toFixed(2)}`;
-    }).join(" | ");
-
+confirmPixBtn.addEventListener("click", () => {
     const totalPrice = cart.reduce((total, item) => total + (item.price * item.quantity), 0);
-    const message = encodeURIComponent(`${cartItems} \nTotal: R$${totalPrice.toFixed(2)} \nEndereço: ${addressInput.value}`);
-    const phone = "31975783629";
 
-    window.open(`https://wa.me/${phone}?text=${message}`, "_blank");
+    const formattedItems = cart.map(item => {
+        return `• ${item.name} (x${item.quantity}) - R$ ${item.price.toFixed(2)}`;
+    }).join("%0A"); // %0A = quebra de linha no WhatsApp
+
+    const message = 
+        `🧾 *Novo Pedido* 🧾%0A%0A` +
+        `🍔 *Itens:*%0A${formattedItems}%0A%0A` +
+        `💰 *Total:* R$ ${totalPrice.toFixed(2)}%0A%0A` +
+        `📍 *Endereço para entrega:*%0A${addressInput.value}`;
+
+    window.open(`https://wa.me/31975783629?text=${message}`, "_blank");
 
     cart = [];
     updateCartModal();
-    document.getElementById("pix-modal").style.display = "none";
+    pixModal.style.display = "none";
 });
+
 
 
 
