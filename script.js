@@ -192,6 +192,8 @@ pixQrCodeImg.src = `https://api.qrserver.com/v1/create-qr-code/?data=00020126580
 
 // Abre o modal Pix
 document.getElementById("pix-modal").style.display = "flex";
+document.getElementById("cart-modal").style.display = "none";
+
 
 
 
