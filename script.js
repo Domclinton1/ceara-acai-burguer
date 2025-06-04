@@ -181,7 +181,7 @@ document.getElementById("pix-amount").textContent = `R$ ${totalPrice.toFixed(2)}
 document.getElementById("pix-address").textContent = addressInput.value;
 
 const cartItemsFormatted = cart.map(item => {
-    return `• ${item.name} (x${item.quantity}) - R$ ${item.price.toFixed(2)}`;
+    return `Item: ${item.name} (x${item.quantity}) - R$ ${item.price.toFixed(2)}`;
 }).join("<br>");
 
 document.getElementById("pix-order-summary").innerHTML = cartItemsFormatted;
