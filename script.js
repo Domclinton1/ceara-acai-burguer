@@ -163,32 +163,35 @@ checkoutBtn.addEventListener("click", function(){
         return item.quantity * item.price;
     }
 
-  // Enviar o pedido para a API do WhatsApp
-const cartItems = cart.map((item) => {
-    const itemTotal = calculateItemTotal(item);
-    return `• *${item.name}*  
-  Quantidade: ${item.quantity}  
-  Preço unitário: R$${item.price.toFixed(2)}  
-  Subtotal: R$${itemTotal.toFixed(2)}\n`;
-}).join("\n");
+    //enviar o pedido para a api do whatsapp
+    const cartItems = cart.map((item) => {
+        const itemTotal = calculateItemTotal(item);
+        return(
+            ` ${item.name} Quantidade: (${item.quantity}) Preço: R$${item.price}| `
+        )
+      
+    }).join("");
 
-const totalPrice = cart.reduce((total, item) => {
+   const totalPrice = cart.reduce((total, item) => {
     return total + calculateItemTotal(item);
 }, 0);
 
-const message = encodeURIComponent(
-`Olá! 😊 Gostaria de fazer um pedido com os seguintes itens:
+// Atualiza dados do modal Pix
+document.getElementById("pix-amount").textContent = `R$ ${totalPrice.toFixed(2)}`;
+document.getElementById("pix-address").textContent = addressInput.value;
 
-${cartItems}
-*Valor total da compra:* R$${totalPrice.toFixed(2)}
+const cartItemsFormatted = cart.map(item => {
+    return `• ${item.name} (x${item.quantity}) - R$ ${item.price.toFixed(2)}`;
+}).join("<br>");
 
-Endereço para entrega: ${addressInput.value}
+document.getElementById("pix-order-summary").innerHTML = cartItemsFormatted;
 
-Desde já, agradeço! Aguardo a confirmação do pedido. ✅`
-);
+// Atualiza o QRCode Pix (recomendado: usar uma API para gerar o QR com o valor)
+const pixQrCodeImg = document.getElementById("pix-qrcode");
+pixQrCodeImg.src = `https://api.qrserver.com/v1/create-qr-code/?data=00020126580014br.gov.bcb.pix011131975783629520400005303986540${totalPrice.toFixed(2).replace('.', '')}5802BR5925Fabricia Gonçalves Jorge6009SAO PAULO62140510CHAVEPAG1234567896304B14F&size=250x250`;
 
-const phone = "31975783629";
-window.open(`https://wa.me/${phone}?text=${message}`, "_blank");
+// Abre o modal Pix
+document.getElementById("pix-modal").style.display = "flex";
 
 
 
@@ -196,13 +199,31 @@ window.open(`https://wa.me/${phone}?text=${message}`, "_blank");
     updateCartModal();
 })
 
+document.getElementById("confirm-pix-btn").addEventListener("click", function () {
+    const cartItems = cart.map(item => {
+        return `${item.name} (x${item.quantity}) - R$${item.price.toFixed(2)}`;
+    }).join(" | ");
+
+    const totalPrice = cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+    const message = encodeURIComponent(`${cartItems} \nTotal: R$${totalPrice.toFixed(2)} \nEndereço: ${addressInput.value}`);
+    const phone = "31975783629";
+
+    window.open(`https://wa.me/${phone}?text=${message}`, "_blank");
+
+    cart = [];
+    updateCartModal();
+    document.getElementById("pix-modal").style.display = "none";
+});
+
+
+
 //verificar a hora e manipular o card horario
 function checkRestaurantOpen() {
     const data = new Date();
     const hora = data.getHours();
     const diaSemana = data.getDay(); // 0 = Domingo, 1 = Segunda, ..., 6 = Sábado
 
-    const abertoHoje = diaSemana !== 2; // Aberto se NÃO for segunda (1)
+    const abertoHoje = diaSemana !== 1; // Aberto se NÃO for segunda (1)
     const horarioAberto = hora >= 8 && hora < 24;
 
     return abertoHoje && horarioAberto;
