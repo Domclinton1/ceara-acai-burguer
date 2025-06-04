@@ -202,14 +202,24 @@ document.getElementById("cart-modal").style.display = "none";
 })
 
 confirmPixBtn.addEventListener("click", () => {
+    const nomeInput = document.getElementById("nome");
+    const nomeCliente = nomeInput.value.trim();
+
+    if (nomeCliente === "") {
+        document.getElementById("nome-warn").classList.remove("hidden");
+        nomeInput.classList.add("border-red-500");
+        return;
+    }
+
     const totalPrice = cart.reduce((total, item) => total + (item.price * item.quantity), 0);
 
     const formattedItems = cart.map(item => {
         return `• ${item.name} (x${item.quantity}) - R$ ${item.price.toFixed(2)}`;
-    }).join("%0A"); // %0A = quebra de linha no WhatsApp
+    }).join("%0A");
 
-    const message = 
+    const message =
         `🧾 *Novo Pedido* 🧾%0A%0A` +
+        `🙍‍♂️ *Nome:* ${nomeCliente}%0A` +
         `🍔 *Itens:*%0A${formattedItems}%0A%0A` +
         `💰 *Total:* R$ ${totalPrice.toFixed(2)}%0A%0A` +
         `📍 *Endereço para entrega:*%0A${addressInput.value}`;
@@ -218,8 +228,10 @@ confirmPixBtn.addEventListener("click", () => {
 
     cart = [];
     updateCartModal();
-    pixModal.style.display = "none";
+    document.getElementById("pix-modal").style.display = "none";
 });
+
+
 
 
 
