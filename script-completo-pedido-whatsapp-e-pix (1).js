@@ -140,7 +140,7 @@ checkoutBtn.addEventListener("click", function () {
 
     const totalPrice = cart.reduce((total, item) => total + item.price * item.quantity, 0)
     const formattedItems = cart.map(item => {
-        return `• ${item.name} (x${item.quantity}) - R$ ${item.price.toFixed(2)}`
+        return `Item: ${item.name} (x${item.quantity}) - R$ ${item.price.toFixed(2)}`
     }).join("%0A")
 
     const message =
@@ -161,7 +161,7 @@ checkoutBtn.addEventListener("click", function () {
     document.getElementById("pix-order-summary").innerHTML = cartItemsFormattedHTML
 
     const pixQrCodeImg = document.getElementById("pix-qrcode")
-    pixQrCodeImg.src = `https://api.qrserver.com/v1/create-qr-code/?data=00020126580014br.gov.bcb.pix011131975783629520400005303986540${totalPrice.toFixed(2).replace('.', '')}5802BR5925Fabricia Gonçalves Jorge6009SAO PAULO62140510CHAVEPAG1234567896304B14F&size=250x250`
+    
 
     document.getElementById("pix-modal").style.display = "flex"
     document.getElementById("cart-modal").style.display = "none"
