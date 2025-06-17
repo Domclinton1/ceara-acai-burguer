@@ -1,4 +1,3 @@
-
 const menu = document.getElementById("menu")
 const cartBtn = document.getElementById("cart-btn")
 const cartModal = document.getElementById("cart-modal")
@@ -14,7 +13,6 @@ const enderecoInput = document.getElementById("address")
 const addressWarn = document.getElementById("address-warn")
 const confirmPixBtn = document.getElementById("confirm-pix-btn")
 const taxaEntregaSpan = document.getElementById("taxa-entrega")
-
 
 let cart = []
 
@@ -138,6 +136,24 @@ checkoutBtn.addEventListener("click", () => {
 
   if (cart.length === 0) return
 
+  const agora = new Date();
+  const horaAtual = agora.getHours();
+  const temHamburguerAntesDas18 = cart.some(item =>
+    item.name.toLowerCase().includes("burguer") && horaAtual < 18
+  );
+  if (temHamburguerAntesDas18) {
+    Toastify({
+      text: "⚠️ Hambúrgueres disponíveis apenas após às 18h!",
+      duration: 4000,
+      close: true,
+      gravity: "top",
+      position: "right",
+      stopOnFocus: true,
+      style: { background: "#f97316" }
+    }).showToast();
+    return;
+  }
+
   const nome = nomeInput.value.trim()
   const endereco = enderecoInput.value.trim()
   const bairro = bairroSelect.value
@@ -162,44 +178,38 @@ checkoutBtn.addEventListener("click", () => {
     `• ${item.name} (x${item.quantity}) - R$ ${item.price.toFixed(2)}`
   ).join("%0A")
 
-  const msg = 
+  const msg =
     `🧾 *Novo Pedido* 🧾%0A%0A` +
     `🙍‍♂️ *Nome:* ${nome}%0A` +
-    `📦 *Itens:*%0A${itensFormatados}%0A%0A` +
     `📍 *Endereço:* ${endereco}, ${bairro}%0A` +
+    `📦 *Itens:*%0A${itensFormatados}%0A%0A` +
     `🚚 *Taxa de entrega:* R$ ${taxa.toFixed(2)}%0A` +
-    `💰 *Total:* R$ ${total.toFixed(2)}` +
-    `🗝️ *Chave Pix:* 54.523.723/0001-02` +
-    `⚠️*Ao realizar o pagamento, enviar comprovante de pagamento*⚠️`
-
+    `💰 *Total:* R$ ${total.toFixed(2)}%0A` +
+    `🗝️ *Chave Pix:* 54.523.723/0001-02%0A` +
+    `⚠️ *Ao realizar o pagamento, enviar comprovante de pagamento*`
 
   window.open(`https://wa.me/31975783629?text=${msg}`, "_blank")
 
-  // Atualiza dados do modal Pix
-document.getElementById("pix-nome").textContent = nome;
-document.getElementById("pix-amount").textContent = `R$ ${total.toFixed(2)}`;
-document.getElementById("pix-address").textContent = `${endereco}, ${bairro}`;
+  document.getElementById("pix-nome").textContent = nome;
+  document.getElementById("pix-amount").textContent = `R$ ${total.toFixed(2)}`;
+  document.getElementById("pix-address").textContent = `${endereco}, ${bairro}`;
 
-// Itens do pedido com taxa de entrega incluída
-const cartItemsFormattedHTML = cart.map(item => {
-  return `🍔 ${item.name} (x${item.quantity}) - R$ ${item.price.toFixed(2)}`
-}).join("<br>");
+  const cartItemsFormattedHTML = cart.map(item => {
+    return `🍔 ${item.name} (x${item.quantity}) - R$ ${item.price.toFixed(2)}`
+  }).join("<br>");
 
-const taxaHTML = `🚚 <strong>Taxa de entrega:</strong> R$ ${taxa.toFixed(2)}<br>`;
-const totalHTML = `<strong>Total com entrega:</strong> R$ ${total.toFixed(2)}`;
+  const taxaHTML = `🚚 <strong>Taxa de entrega:</strong> R$ ${taxa.toFixed(2)}<br>`;
+  const totalHTML = `<strong>Total com entrega:</strong> R$ ${total.toFixed(2)}`;
 
-document.getElementById("pix-order-summary").innerHTML = `
-  ${cartItemsFormattedHTML}<br>${taxaHTML}<br>${totalHTML}
-`;
+  document.getElementById("pix-order-summary").innerHTML = `
+    ${cartItemsFormattedHTML}<br>${taxaHTML}<br>${totalHTML}
+  `;
 
-// Atualiza QR Code Pix (simulado)
-const pixQrCodeImg = document.getElementById("pix-qrcode");
-pixQrCodeImg.src = `https://api.qrserver.com/v1/create-qr-code/?data=VALOR_${total.toFixed(2).replace(".", "")}&size=250x250`;
+  const pixQrCodeImg = document.getElementById("pix-qrcode");
+  pixQrCodeImg.src = `https://api.qrserver.com/v1/create-qr-code/?data=VALOR_${total.toFixed(2).replace(".", "")}&size=250x250`;
 
-// Exibe modal Pix
-document.getElementById("pix-modal").style.display = "flex";
-document.getElementById("cart-modal").style.display = "none";
-
+  document.getElementById("pix-modal").style.display = "flex";
+  document.getElementById("cart-modal").style.display = "none";
 })
 
 confirmPixBtn.addEventListener("click", () => {
@@ -212,6 +222,5 @@ function checkRestaurantOpen() {
   const data = new Date()
   const hora = data.getHours()
   const diaSemana = data.getDay()
-  return diaSemana !== 2 && hora >= 8 && hora < 24
+  return diaSemana !== 1 && hora >= 8 && hora < 24
 }
-
