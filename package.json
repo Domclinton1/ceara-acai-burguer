@@ -1,18 +1,16 @@
 {
-  "name": "cearacai-burguer",
+  "name": "cearaacai-burguer",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "npx tailwindcss -i ./styles/style.css -o ./styles/output.css --watch"
+    "dev": "npx tailwindcss -i ./styles/style.css -o ./styles/output.css --watch",
+    "build": "npx tailwindcss -i ./styles/style.css -o ./styles/output.css --minify"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "tailwindcss": "^3.4.17"
-  },
-  "dependencies": {
-    "cearacai-burguer": "file:"
   }
 }
